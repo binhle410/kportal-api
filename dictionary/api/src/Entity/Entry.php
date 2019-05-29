@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Entry
 {
     const TYPE_VERB_INTRANSITIVE = 'INTRANSITIVE_VERB';
-
+    
     public function __construct()
     {
         $this->examples = new ArrayCollection();
