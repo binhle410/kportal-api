@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Entry
 {
-    private $id;
+    const TYPE_VERB_INTRANSITIVE = 'INTRANSITIVE_VERB';
 
     public function __construct()
     {
@@ -54,7 +54,7 @@ class Entry
 
     /**
      * @Groups({"read", "write"})
-     * @ORM\Column(type="string", length=40)
+     * @ORM\Column(type="string", length=40, nullable=true)
      */
     private $type;
 
@@ -87,11 +87,6 @@ class Entry
      */
     private $briefComment;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getUuid(): ?string
     {
         return $this->uuid;
@@ -121,7 +116,7 @@ class Entry
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(?string $type): self
     {
         $this->type = $type;
 
