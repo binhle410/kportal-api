@@ -10,6 +10,8 @@ class AppUtil
 
     public static function generateUuid($prefix = self::APP_NAME)
     {
-        return sprintf('%s-%s-%s', $prefix, uniqid(), date_format(new \DateTime(), 'HidmY'));
+        $now = new \DateTime();
+        $now->modify(sprintf('+ %d seconds', rand(0, 59)));
+        return sprintf('%s-%s-%s-%s', $prefix, date_format(new \DateTime(), 'YmdHis'), date_format($now, 's'), uniqid());
     }
 }

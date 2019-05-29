@@ -20,12 +20,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Entry
 {
-    /**
-     * @var int|null
-     * @ORM\Id
-     * @ORM\Column(type="integer",options={"unsigned":true})
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     private $id;
 
     public function __construct()
@@ -34,20 +28,23 @@ class Entry
     }
 
     /**
-     * @ORM\PrePersist
-     */
-    public function initiateUuid()
-    {
-        if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
-        }
-    }
-
-    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="App\Doctrine\Generator\RandomIdGenerator")
      * @ORM\Column(type="string", length=191)
      * @Groups("read")
      */
     private $uuid;
+
+    /**
+     * @Groups({"read", "write"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Example", inversedBy="entries")
+     * @ORM\JoinTable(name="dictionary__entries_examples",
+     *      joinColumns={@ORM\JoinColumn(name="id_entry", referencedColumnName="uuid")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="id_example", referencedColumnName="uuid")}
+     * )
+     */
+    private $examples;
 
     /**
      * @Groups({"read", "write"})
@@ -84,22 +81,11 @@ class Entry
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $phoneticSymbols;
-
     /**
      * @Groups({"read", "write"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $briefComment;
-
-    /**
-     * @Groups({"read", "write"})
-     * @ORM\ManyToMany(targetEntity="App\Entity\Example", inversedBy="entries")
-     * @ORM\JoinTable(name="dictionary__entries_examples",
-     *      joinColumns={@ORM\JoinColumn(name="id_entry", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="id_example", referencedColumnName="id")}
-     * )
-     */
-    private $examples;
 
     public function getId(): ?int
     {

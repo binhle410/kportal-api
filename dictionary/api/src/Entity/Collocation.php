@@ -18,13 +18,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Collocation
 {
-    /**
-     * @var int|null
-     * @ORM\Id
-     * @ORM\Column(type="integer",options={"unsigned":true})
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
 
     public function __construct()
     {
@@ -42,6 +35,9 @@ class Collocation
 
     /**
      * @Groups("read")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="App\Doctrine\Generator\RandomIdGenerator")
      * @ORM\Column(type="string", length=191)
      */
     private $uuid;
