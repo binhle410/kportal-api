@@ -19,6 +19,9 @@
     "api-platform/schema-generator": {
         "version": "v2.1.0"
     },
+    "aws/aws-sdk-php": {
+        "version": "3.97.0"
+    },
     "composer/semver": {
         "version": "1.5.0"
     },
@@ -160,6 +163,9 @@
     },
     "monolog/monolog": {
         "version": "1.24.0"
+    },
+    "mtdowling/jmespath.php": {
+        "version": "2.4.0"
     },
     "namshi/jose": {
         "version": "7.2.3"
