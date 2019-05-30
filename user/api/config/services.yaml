@@ -25,3 +25,47 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+
+    Aws\Sdk: ~
+
+    App\Util\AwsSqsUtil:
+        arguments:
+            $config: '%aws_sdk.config.default%'
+            $credentials: '%aws_sdk.credentials.default%'
+            $env: '%kernel.environment%'
+    #        calls:
+    #            - [createClient, ['%aws_sdk.config.default%', '%aws_sdk.credentials.default%']]
+
+    App\Util\AwsSnsUtil:
+        arguments:
+            $config: '%aws_sdk.config.default%'
+            $credentials: '%aws_sdk.credentials.sns%'
+            $env: '%kernel.environment%'
+    #        calls:
+    #            - [createClient, ['%aws_sdk.config.default%', '%aws_sdk.credentials.default%']]
+
+    App\Command\AwsSqsWorkerCommand:
+        tags:
+            -  { name: console.command }
+
+    App\Message\Consumer:
+        arguments: [!tagged consumer_strategy]
+
+    #    App\Message\ConsumerStrategy\ImageStrategy:
+    #        tags:
+    #            - { name: consumer_strategy }
+
+    #    App\Message\ConsumerStrategy\FileStrategy:
+    #        tags:
+    #            - { name: consumer_strategy }
+
+    App\Message\ConsumerStrategy\ProcessNDeleteStrategy:
+        tags:
+            - { name: consumer_strategy }
+
+    app.event.jwt_created_listener:
+        class: App\EventListener\JWTCreatedListener
+        arguments: [ '@request_stack' ]
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
