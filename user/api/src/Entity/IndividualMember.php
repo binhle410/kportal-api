@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Util\AppUtil;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
@@ -24,39 +25,26 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class IndividualMember
 {
-    /**
-     * @var int|null The User Id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer",options={"unsigned":true})
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     /**
      * @var Organisation|null
      * @ORM\ManyToOne(targetEntity="Organisation", inversedBy="organisationUsers")
-     * @ORM\JoinColumn(name="id_organisation", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="id_organisation", referencedColumnName="uuid", onDelete="CASCADE")
      */
     private $organisation;
 
     /**
      * @var User|null
      * @ORM\ManyToOne(targetEntity="User", inversedBy="organisationUsers")
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="uuid", onDelete="CASCADE")
      */
     private $user;
 
     /**
-     * @ORM\Column(type="string", length=191, nullable=true)
+     * @var string The Universally Unique Id
+     * @ORM\Id
+     * @ORM\Column(type="string", length=191)
+     * @Groups("read")
      */
     private $uuid;
 

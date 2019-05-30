@@ -23,7 +23,7 @@ class UserFixtures extends Fixture
     {
         $user = new User();
         $user->setIdNumber('U1-024290123');
-        $user->setUuid('USER-5dd3c0ba00f40-103827042019');
+//        $user->setUuid('USER-5dd3c0ba00f40-103827042019');
         $user->setEmail('user1@gmail.com');
         $user->setUsername('user1');
         $user->setPhone('0369140916');

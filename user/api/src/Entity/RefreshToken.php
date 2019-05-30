@@ -12,11 +12,11 @@ use Gesdinet\JWTRefreshTokenBundle\Entity\AbstractRefreshToken;
 class RefreshToken extends AbstractRefreshToken
 {
     /**
-     * @var int|null The User Id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer",options={"unsigned":true})
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @var string The Universally Unique Id
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="App\Doctrine\Generator\RandomIdGenerator")
+     * @ORM\Column(type="string", length=191)
      */
     protected $id;
 

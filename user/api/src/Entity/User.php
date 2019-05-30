@@ -27,29 +27,10 @@ use ApiPlatform\Core\Annotation\ApiResource;
  */
 class User implements UserInterface
 {
-    /**
-     * @var int|null The User Id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer",options={"unsigned":true})
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->individualMembers = new ArrayCollection();
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function initiateUuid()
-    {
-        if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
-        }
     }
 
     /**
@@ -142,7 +123,11 @@ class User implements UserInterface
 
     /**
      * @var string The Universally Unique Id
-     * @ORM\Column(type="string", length=191, unique=true)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="App\Doctrine\Generator\RandomIdGenerator")
+     * @ORM\Column(type="string", length=191)
+     * @Groups("read")
      */
     private $uuid;
 
@@ -191,11 +176,6 @@ class User implements UserInterface
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getEmail(): ?string
     {
@@ -301,14 +281,6 @@ class User implements UserInterface
     public function getUuid(): string
     {
         return $this->uuid;
-    }
-
-    /**
-     * @param string $uuid
-     */
-    public function setUuid(string $uuid): void
-    {
-        $this->uuid = $uuid;
     }
 
     /**

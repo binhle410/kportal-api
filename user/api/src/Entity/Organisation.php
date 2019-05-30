@@ -6,6 +6,7 @@ use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -15,14 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Organisation
 {
-    /**
-     * @var int|null The User Id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer",options={"unsigned":true})
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+
 
     /** @return User */
     public function findUserByAccessToken($accessToken){
@@ -45,17 +39,10 @@ class Organisation
     }
 
     /**
-     * @return int|null
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    /**
      * @var string The Universally Unique Id
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank()
+     * @ORM\Id
+     * @ORM\Column(type="string", length=191)
+     * @Groups("read")
      */
     private $uuid;
 

@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\IndividualMember;
 use App\Entity\Organisation;
 use App\Entity\OrganisationUser;
 use App\Entity\User;
@@ -30,17 +31,17 @@ class OrganisationFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($org);
         $manager->flush();
 
-        $ou = new OrganisationUser();
-        $org->addOrganisationUser($ou);
+        $ou = new IndividualMember();
+        $org->addIndividualMember($ou);
 
         $userRepo = $manager->getRepository(User::class);
-        $user = $userRepo->findOneBy(['uuid' => UserFixtures::FIRST_USER,
+        $user = $userRepo->findOneBy(['email' => 'user1@gmail.com',
         ]);
 
-        $user->addOrganisationUser($ou);
-        $org->addOrganisationUser($ou);
+        $user->addIndividualMember($ou);
+        $org->addIndividualMember($ou);
 
-        $ou->setUuid(sprintf(self::FIRST_MEMBER_STRING, $org->getId(), $user->getId()));
+        $ou->setUuid(sprintf(self::FIRST_MEMBER_STRING, $org->getUuid(), $user->getUuid()));
 
 
         $manager->persist($user);
