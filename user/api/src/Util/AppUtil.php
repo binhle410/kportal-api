@@ -23,9 +23,7 @@ class AppUtil
 
     public static function generateUuid($prefix = self::APP_NAME)
     {
-        $now = new \DateTime();
-        $now->modify(sprintf('+ %d seconds', rand(0, 59)));
-        return sprintf('%s-%s-%s-%s', $prefix, date_format(new \DateTime(), 'YmdHis'), date_format($now, 's'), uniqid());
+        return sprintf('%s-%s-%s-%s', $prefix, date_format(new \DateTime(), 'YmdHis'), rand(0, 999), uniqid());
     }
 
     public static function copyObjectScalarProperties($source, $dest)

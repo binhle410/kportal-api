@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Person;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -35,8 +36,12 @@ class UserFixtures extends Fixture
             'p@ssword'
         ));
 
-        $manager->persist($user);
+        $person = new Person();
+        $person->setUuid('PERSON-20190531010101-10-1987');
+        $person->setAccount($user);
 
+        $manager->persist($user);
+        $manager->persist($person);
         $manager->flush();
     }
 }

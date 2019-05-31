@@ -177,6 +177,11 @@ class User implements UserInterface
      */
     private $createdAt;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Person", mappedBy="account", cascade={"persist", "remove"})
+     */
+    private $person;
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -329,5 +334,23 @@ class User implements UserInterface
     public function setPlainPassword(?string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
+    }
+
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?Person $person): self
+    {
+        $this->person = $person;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newAccount = $person === null ? null : $this;
+        if ($newAccount !== $person->getAccount()) {
+            $person->setAccount($newAccount);
+        }
+
+        return $this;
     }
 }
