@@ -7,6 +7,7 @@ use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
@@ -18,27 +19,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Person
 {
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="App\Doctrine\Generator\RandomIdGenerator")
+     * @ORM\Column(type="string", length=191)
+     * @Groups("read")
+     */
+    private $uuid;
+
     const GENDER_MALE = 'MALE';
+
     const GENDER_FEMALE = 'FEMALE';
-
-    /**
-     * @var int|null The Event Id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer",options={"unsigned":true})
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function initiateUuid()
-    {
-        if (empty($this->uuid)) {
-            $this->uuid = AppUtil::generateUuid();
-        }
-    }
 
     public function getNationality()
     {
@@ -80,10 +73,6 @@ class Person
      */
     private $phoneNumber;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $uuid;
 
     /**
      * @ORM\Column(type="string", length=64, nullable=true)
@@ -93,11 +82,6 @@ class Person
     public function __construct()
     {
         $this->nationalities = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getBirthDate(): ?\DateTimeInterface
@@ -206,13 +190,6 @@ class Person
     public function getUuid(): ?string
     {
         return $this->uuid;
-    }
-
-    public function setUuid(string $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
     }
 
     public function getMiddleName(): ?string

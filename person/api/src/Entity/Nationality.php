@@ -2,22 +2,42 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource(
+ *     attributes={"access_control"="is_granted('ROLE_USER')"},
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\NationalityRepository")
  * @ORM\Table(name="person__nationality")
  */
 class Nationality
 {
+    public function __construct()
+    {
+    }
+
     /**
-     * @var int|null The Event Id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer",options={"unsigned":true})
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="App\Doctrine\Generator\RandomIdGenerator")
+     * @ORM\Column(type="string", length=191)
+     * @Groups("read")
      */
-    private $id;
+    private $uuid;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person", inversedBy="nationalities")
+     * @ORM\JoinColumn(name="id_person", referencedColumnName="uuid", onDelete="CASCADE")
+     */
+    private $person;
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
 
     /**
      * @ORM\Column(type="string", length=128)
@@ -33,16 +53,6 @@ class Nationality
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $passportNumber;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person", inversedBy="nationalities")
-     */
-    private $person;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getCountry(): ?string
     {
