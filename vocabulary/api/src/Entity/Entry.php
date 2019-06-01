@@ -2,41 +2,35 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource(
- *     normalizationContext={"groups"={"read"}},
- *     denormalizationContext={"groups"={"write"}}
- * )
  * @ORM\Entity(repositoryClass="App\Repository\EntryRepository")
- * @ORM\Table(name="vocabulary__entry")
- * @ORM\HasLifecycleCallbacks()
  */
 class Entry
 {
-    public function __construct()
-    {
-    }
-
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person", inversedBy="entries")
-     * @ORM\JoinColumn(name="id_person", referencedColumnName="uuid", onDelete="CASCADE")
-     */
-    private $person;
-
-    /**
-     * @ORM\Id
+     * @ORM\Id()
      * @ORM\Column(type="string", length=191)
      */
     private $uuid;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $title;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PersonalEntry", mappedBy="entry")
+     */
+    private $personalEntries;
+
+    public function __construct()
+    {
+        $this->personalEntries = new ArrayCollection();
+    }
 
     public function getUuid(): ?string
     {
@@ -55,21 +49,40 @@ class Entry
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    public function getPerson(): ?Person
+    /**
+     * @return Collection|PersonalEntry[]
+     */
+    public function getPersonalEntries(): Collection
     {
-        return $this->person;
+        return $this->personalEntries;
     }
 
-    public function setPerson(?Person $person): self
+    public function addPersonalEntry(PersonalEntry $personalEntry): self
     {
-        $this->person = $person;
+        if (!$this->personalEntries->contains($personalEntry)) {
+            $this->personalEntries[] = $personalEntry;
+            $personalEntry->setEntry($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonalEntry(PersonalEntry $personalEntry): self
+    {
+        if ($this->personalEntries->contains($personalEntry)) {
+            $this->personalEntries->removeElement($personalEntry);
+            // set the owning side to null (unless already changed)
+            if ($personalEntry->getEntry() === $this) {
+                $personalEntry->setEntry(null);
+            }
+        }
 
         return $this;
     }

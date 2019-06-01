@@ -2,11 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ApiResource(
+ *     normalizationContext={"groups"={"read"}},
+ *     denormalizationContext={"groups"={"write"}}
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\PersonRepository")
  * @ORM\Table(name="vocabulary__person")
  * @ORM\HasLifecycleCallbacks()
@@ -26,7 +31,7 @@ class Person
     private $uuid;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Entry", mappedBy="person")
+     * @ORM\OneToMany(targetEntity="PersonalEntry", mappedBy="person")
      */
     private $entries;
 
@@ -43,14 +48,14 @@ class Person
     }
 
     /**
-     * @return Collection|Entry[]
+     * @return Collection|PersonalEntry[]
      */
     public function getEntries(): Collection
     {
         return $this->entries;
     }
 
-    public function addEntry(Entry $entry): self
+    public function addEntry(PersonalEntry $entry): self
     {
         if (!$this->entries->contains($entry)) {
             $this->entries[] = $entry;
@@ -60,7 +65,7 @@ class Person
         return $this;
     }
 
-    public function removeEntry(Entry $entry): self
+    public function removeEntry(PersonalEntry $entry): self
     {
         if ($this->entries->contains($entry)) {
             $this->entries->removeElement($entry);
