@@ -44,6 +44,7 @@ class PersonalEntry
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Entry", inversedBy="personalEntries")
      * @ORM\JoinColumn(name="id_entry", referencedColumnName="uuid", onDelete="CASCADE")
+     * @Groups({"read","write"})
      */
     private $entry;
 

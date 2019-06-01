@@ -7,8 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     normalizationContext={"groups"={"read"}},
+ *     denormalizationContext={"groups"={"write"}}
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\OccurrenceRepository")
+ * @ORM\Table(name="vocabulary__occurrence")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Occurrence
 {
