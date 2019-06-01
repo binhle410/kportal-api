@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EntryRepository")
+ * @ORM\Table(name="vocabulary__entry")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Entry
 {

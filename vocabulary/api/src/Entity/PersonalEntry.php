@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"write"}}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\PersonalEntryRepository")
- * @ORM\Table(name="vocabulary__vocabulary")
+ * @ORM\Table(name="vocabulary__personal_entry")
  * @ORM\HasLifecycleCallbacks()
  */
 class PersonalEntry
