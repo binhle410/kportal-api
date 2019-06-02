@@ -86,14 +86,14 @@ class Example
     }
 
     /**
-     * @return Collection|PersonalEntry[]
+     * @return Collection|Entry[]
      */
     public function getEntries(): Collection
     {
         return $this->entries;
     }
 
-    public function addEntry(PersonalEntry $entry): self
+    public function addEntry(Entry $entry): self
     {
         if (!$this->entries->contains($entry)) {
             $this->entries[] = $entry;
@@ -103,7 +103,7 @@ class Example
         return $this;
     }
 
-    public function removeEntry(PersonalEntry $entry): self
+    public function removeEntry(Entry $entry): self
     {
         if ($this->entries->contains($entry)) {
             $this->entries->removeElement($entry);
