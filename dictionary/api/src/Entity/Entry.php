@@ -2,18 +2,28 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Util\AppUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource(
  *     normalizationContext={"groups"={"read"}},
  *     denormalizationContext={"groups"={"write"}}
  * )
+ * @ApiFilter(SearchFilter::class,
+ *     properties={
+ *     "uuid": "exact",
+ *     "title": "exact",
+ *     "briefComment": "exact",
+ *     "phoneticSymbols": "partial",
+ *     "definition": "partial"
+ * })
  * @ORM\Entity(repositoryClass="App\Repository\EntryRepository")
  * @ORM\Table(name="dictionary__entry")
  * @ORM\HasLifecycleCallbacks()
@@ -21,7 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Entry
 {
     const TYPE_VERB_INTRANSITIVE = 'INTRANSITIVE_VERB';
-    
+
     public function __construct()
     {
         $this->examples = new ArrayCollection();
@@ -35,6 +45,11 @@ class Entry
      * @Groups("read")
      */
     private $uuid;
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
 
     /**
      * @Groups({"read", "write"})
@@ -81,23 +96,12 @@ class Entry
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $phoneticSymbols;
+
     /**
      * @Groups({"read", "write"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $briefComment;
-
-    public function getUuid(): ?string
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(string $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
 
     public function getLocale(): ?string
     {

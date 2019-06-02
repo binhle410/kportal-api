@@ -52,7 +52,7 @@ class Example
     private $text;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Entry", mappedBy="examples")
+     * @ORM\ManyToMany(targetEntity="Entry", mappedBy="examples")
      */
     private $entries;
 
@@ -86,14 +86,14 @@ class Example
     }
 
     /**
-     * @return Collection|Entry[]
+     * @return Collection|PersonalEntry[]
      */
     public function getEntries(): Collection
     {
         return $this->entries;
     }
 
-    public function addEntry(Entry $entry): self
+    public function addEntry(PersonalEntry $entry): self
     {
         if (!$this->entries->contains($entry)) {
             $this->entries[] = $entry;
@@ -103,7 +103,7 @@ class Example
         return $this;
     }
 
-    public function removeEntry(Entry $entry): self
+    public function removeEntry(PersonalEntry $entry): self
     {
         if ($this->entries->contains($entry)) {
             $this->entries->removeElement($entry);
