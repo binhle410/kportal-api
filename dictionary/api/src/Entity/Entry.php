@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Util\AppUtil;
+use App\Util\AwsS3Util;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -52,6 +53,38 @@ class Entry
     }
 
     /**
+     * @Groups("read")
+     *
+     * @return mixed|string|null
+     */
+    public function getAudioReadUrl()
+    {
+        if (empty($this->audio)) {
+            return null;
+        }
+        $path = $this->buildAudioPath();
+
+        return AwsS3Util::getInstance()->getObjectReadUrl($path);
+    }
+
+    /**
+     * @Groups("read")
+     *
+     * @return mixed|string|null
+     */
+    public function getAudioWriteUrl()
+    {
+        $path = $this->buildAudioPath();
+
+        return AwsS3Util::getInstance()->getObjectWriteUrl($path);
+    }
+
+    private function buildAudioPath()
+    {
+        return strtolower(AppUtil::APP_NAME).'/audio/'.$this->uuid.'-'.$this->audio;
+    }
+
+    /**
      * @Groups({"read", "write"})
      * @ORM\ManyToMany(targetEntity="App\Entity\Example", inversedBy="entries")
      * @ORM\JoinTable(name="dictionary__entries_examples",
@@ -80,7 +113,7 @@ class Entry
     private $definition;
 
     /**
-     * @Groups({"read", "write"})
+     * Groups({"read", "write"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $audio;

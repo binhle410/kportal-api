@@ -22,22 +22,11 @@ class AwsS3Util
 
     public function deleteObject($path)
     {
-        $accessKey = getenv('S3_ACCESS_KEY');
-        $secretKey = getenv('S3_SECRET_KEY');
-        $region = getenv('S3_REGION');
+        $s3Client = $this->createClient();
+
         $bucket = getenv('S3_BUCKET');
         $directory = getenv('S3_DIRECTORY');
-        $version = self::SDK_VERSION;
         $path = $directory.'/'.$path;
-
-        $credentials = new Credentials($accessKey, $secretKey);
-
-        $s3Client = new S3Client([
-//            'profile' => 'default',
-            'region' => $region,
-            'version' => $version,
-            'credentials' => $credentials,
-        ]);
 
         // Delete an object from the bucket.
         $s3Client->deleteObject([
@@ -51,6 +40,24 @@ class AwsS3Util
         }
     }
 
+    private function createClient()
+    {
+        $accessKey = getenv('S3_ACCESS_KEY');
+        $secretKey = getenv('S3_SECRET_KEY');
+        $region = getenv('S3_REGION');
+        $version = self::SDK_VERSION;
+
+        $credentials = new Credentials($accessKey, $secretKey);
+
+        $s3Client = new S3Client([
+//            'profile' => 'default',
+            'region' => $region,
+            'version' => $version,
+            'credentials' => $credentials,
+        ]);
+        return $s3Client;
+    }
+
     public function getObjectReadUrl($path, $expr = '+7 days')
     {
         $apcuGetKey = 'GET_'.$path;
@@ -58,24 +65,24 @@ class AwsS3Util
             return apcu_fetch($apcuGetKey);
         }
 
-        $accessKey = getenv('S3_ACCESS_KEY');
-        $secretKey = getenv('S3_SECRET_KEY');
-        $region = getenv('S3_REGION');
         $bucket = getenv('S3_BUCKET');
         $directory = getenv('S3_DIRECTORY');
-        $version = self::SDK_VERSION;
-
-        $credentials = new Credentials($accessKey, $secretKey);
-
         $path = $directory.'/'.$path;
 
-        //Creating a presigned request
-        $s3Client = new S3Client([
-//            'profile' => 'default',
-            'region' => $region,
-            'version' => $version,
-            'credentials' => $credentials,
-        ]);
+//        $version = self::SDK_VERSION;
+//
+//        $credentials = new Credentials($accessKey, $secretKey);
+//
+//
+//        //Creating a presigned request
+//        $s3Client = new S3Client([
+////            'profile' => 'default',
+//            'region' => $region,
+//            'version' => $version,
+//            'credentials' => $credentials,
+//        ]);
+
+        $s3Client = $this->createClient();
 
         $cmd = $s3Client->getCommand('GetObject', [
             'Bucket' => $bucket,
@@ -85,7 +92,46 @@ class AwsS3Util
         $request = $s3Client->createPresignedRequest($cmd, $expr);
         $url = (string) $request->getUri();
 
-        apcu_store($apcuGetKey, $url);
+        apcu_store($apcuGetKey, $url,60*60*24*7);
+
+        return $url;
+    }
+
+    public function getObjectWriteUrl($path, $expr = '+7 day')
+    {
+        $apcuPutKey = 'PUT_'.$path;
+        if (apcu_exists($apcuPutKey)) {
+            return apcu_fetch($apcuPutKey);
+        }
+
+        $bucket = getenv('S3_BUCKET');
+        $directory = getenv('S3_DIRECTORY');
+        $path = $directory.'/'.$path;
+
+//        $version = self::SDK_VERSION;
+//
+//        $credentials = new Credentials($accessKey, $secretKey);
+//
+//
+//        //Creating a presigned request
+//        $s3Client = new S3Client([
+////            'profile' => 'default',
+//            'region' => $region,
+//            'version' => $version,
+//            'credentials' => $credentials,
+//        ]);
+
+        $s3Client = $this->createClient();
+
+        $cmd = $s3Client->getCommand('PutObject', [
+            'Bucket' => $bucket,
+            'Key' => $path,
+        ]);
+
+        $request = $s3Client->createPresignedRequest($cmd, $expr);
+        $url = (string) $request->getUri();
+
+        apcu_store($apcuPutKey, $url,60*60*24*7);
 
         return $url;
     }
