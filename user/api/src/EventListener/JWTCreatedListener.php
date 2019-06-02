@@ -37,19 +37,21 @@ class JWTCreatedListener
         $payload['org'] = $request->attributes->get('orgUid');
         $payload['im'] = $request->attributes->get('imUid');
 
-        if (empty($payload['org'])) {
-            $imUuid = $request->request->get('im-uuid');
-            if (empty($imUuid) && $user->getIndividualMembers()->count() > 0) {
-                /** @var IndividualMember $im */
-                $im = $user->getIndividualMembers()->first();
-                $imUuid = $im->getUuid();
-                $orgUuid = $im->getOrganisation()->getUuid();
-            } else {
-                $im = $user->findOrgUserByUuid($imUuid);
-                $orgUuid = $im->getOrganisation()->getUuid();
+        if ($user->getIndividualMembers()->count() > 0) {
+            if (empty($payload['org'])) {
+                $imUuid = $request->request->get('im-uuid');
+                if (empty($imUuid)) {
+                    /** @var IndividualMember $im */
+                    $im = $user->getIndividualMembers()->first();
+                    $imUuid = $im->getUuid();
+                    $orgUuid = $im->getOrganisation()->getUuid();
+                } else {
+                    $im = $user->findOrgUserByUuid($imUuid);
+                    $orgUuid = $im->getOrganisation()->getUuid();
+                }
+                $payload['org'] = $orgUuid;
+                $payload['im'] = $imUuid;
             }
-            $payload['org'] = $orgUuid;
-            $payload['im'] = $imUuid;
         }
 
 //        $payload['uuid'] = $user->getUuid();
