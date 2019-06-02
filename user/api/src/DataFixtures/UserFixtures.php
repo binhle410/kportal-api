@@ -37,7 +37,7 @@ class UserFixtures extends Fixture
         ));
 
         $person = new Person();
-        $person->setUuid('PERSON-20190531010101-10-1987');
+        $person->setUuid('PERSON-20190531160418-821-5cf1508260e14');
         $person->setAccount($user);
 
         $manager->persist($user);

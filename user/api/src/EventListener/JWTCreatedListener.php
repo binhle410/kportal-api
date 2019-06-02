@@ -39,7 +39,7 @@ class JWTCreatedListener
 
         if (empty($payload['org'])) {
             $imUuid = $request->request->get('im-uuid');
-            if (empty($imUuid)) {
+            if (empty($imUuid) && $user->getIndividualMembers()->count() > 0) {
                 /** @var IndividualMember $im */
                 $im = $user->getIndividualMembers()->first();
                 $imUuid = $im->getUuid();
