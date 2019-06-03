@@ -24,7 +24,6 @@ class PersonalEntry
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="App\Doctrine\Generator\RandomIdGenerator")
      * @ORM\Column(type="string", length=191)
-     * @Groups("read")
      */
     private $uuid;
 
@@ -32,7 +31,6 @@ class PersonalEntry
     {
         $this->occurrences = new ArrayCollection();
     }
-
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Person", inversedBy="entries")
@@ -56,7 +54,7 @@ class PersonalEntry
      * @ORM\Column(type="integer", options={"default":0})
      * @Groups("read")
      */
-    private $score;
+    private $score = 0;
 
     public function getUuid(): ?string
     {
